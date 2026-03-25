@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Body - Cyber Security Club</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CyberSec Club</span>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="achievements.html">Achievements</a></li>
+                <li><a href="executive.html" class="active">Executive Body</a></li>
+                <li><a href="alumni.html">Alumni</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="contests.html">Contests</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="header-overlay"></div>
+        <div class="container">
+            <h1><i class="fas fa-users-cog"></i> Executive Body</h1>
+            <p>Meet the leaders driving our mission forward</p>
+        </div>
+    </section>
+
+    <!-- Executive Section -->
+    <section class="executive-section">
+        <div class="container">
+            <div class="filter-bar" style="margin-bottom: 30px;">
+                <select id="yearFilter" class="filter-select">
+                    <option value="">All Years</option>
+                </select>
+                <select id="statusFilter" class="filter-select">
+                    <option value="">All Members</option>
+                    <option value="current">Current Committee</option>
+                    <option value="past">Past Committee</option>
+                </select>
+            </div>
+            <div class="members-grid" id="membersGrid">
+                <div class="loading">Loading executive members...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Member Modal -->
+    <div id="memberModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-shield-alt"></i> CyberSec Club</h3>
+                    <p>Empowering the next generation of cybersecurity professionals.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="achievements.html">Achievements</a></li>
+                        <li><a href="executive.html">Executive Body</a></li>
+                        <li><a href="alumni.html">Alumni</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="contests.html">Contests</a></li>
+                        <li><a href="index.html#contact">Contact Us</a></li>
+                        <li><a href="#">Join Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@cybersecclub.edu</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> University Campus, Building A</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Cyber Security Club. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/sample-data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/data-loader.js"></script>
+
+    <script>
+        // Utility functions
+        function truncateText(text, maxLength) {
+            if (!text) return '';
+            if (text.length <= maxLength) return text;
+            return text.substr(0, maxLength) + '...';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showMemberModal(name, role, bio, imageUrl, linkedin, github, email, year, current) {
+            const modal = document.getElementById('memberModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            const isCurrent = current == 1 || current === 'true' || current === true;
+            const statusText = isCurrent ? 'Current Committee' : 'Past Committee';
+            const statusColor = isCurrent ? 'var(--success)' : 'var(--text-secondary)';
+            
+            modalBody.innerHTML = `
+                <div style="text-align: center;">
+                    <img src="${imageUrl || 'images/default-avatar.jpg'}" alt="${name}" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 3px solid var(--primary-color);">
+                    <h2 style="color: var(--primary-color); margin-bottom: 10px;">${name}</h2>
+                    <p style="color: var(--secondary-color); font-size: 1.2rem; margin-bottom: 10px;">${role}</p>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; font-size: 0.95rem; flex-wrap: wrap;">
+                        ${year ? `<span style="color: var(--text-secondary);"><i class="fas fa-calendar"></i> Year: ${year}</span>` : ''}
+                        <span style="color: ${statusColor};"><i class="fas fa-circle" style="font-size: 0.6rem;"></i> ${statusText}</span>
+                    </div>
+                    <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 20px;">${bio}</p>
+                    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+                        ${linkedin ? `<a href="${linkedin}" target="_blank" class="btn btn-primary"><i class="fab fa-linkedin"></i> LinkedIn</a>` : ''}
+                        ${github ? `<a href="${github}" target="_blank" class="btn btn-secondary"><i class="fab fa-github"></i> GitHub</a>` : ''}
+                        ${email ? `<a href="mailto:${email}" class="btn btn-secondary"><i class="fas fa-envelope"></i> Email</a>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        // Main execution
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('=== Executive page loading ===');
+            
+            try {
+                // Load members data
+                console.log('Loading members data...');
+                const members = await loadMembers();
+                console.log('Members data:', members);
+                
+                if (!members || members.length === 0) {
+                    console.warn('No members data available');
+                    const container = document.getElementById('membersGrid');
+                    if (container) {
+                        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No members to display.</p>';
+                    }
+                    return;
+                }
+
+                console.log(`Loaded ${members.length} members`);
+                
+                // Sort by role (President first, then VP, etc.)
+                const roleOrder = {
+                    'president': 1,
+                    'vice president': 2,
+                    'secretary': 3,
+                    'treasurer': 4,
+                    'technical lead': 5,
+                    'event coordinator': 6,
+                    'content head': 7,
+                    'social media manager': 8,
+                    'member': 99
+                };
+                
+                members.sort((a, b) => {
+                    const orderA = roleOrder[a.role.toLowerCase()] || 99;
+                    const orderB = roleOrder[b.role.toLowerCase()] || 99;
+                    return orderA - orderB;
+                });
+                
+                console.log('Members sorted');
+                
+                // Get container
+                const container = document.getElementById('membersGrid');
+                if (!container) {
+                    console.error('membersGrid container not found!');
+                    return;
+                }
+                
+                // Function to render members based on filters
+                function renderMembers(filteredMembers = members) {
+                    // Separate current and past members
+                    const currentMembers = filteredMembers.filter(m => m.current == 1 || m.current === 'true' || m.current === true);
+                    const pastMembers = filteredMembers.filter(m => !(m.current == 1 || m.current === 'true' || m.current === true));
+                    
+                    // Group past members by year
+                    const membersByYear = {};
+                    pastMembers.forEach(member => {
+                        const year = member.year || 'Unknown Year';
+                        if (!membersByYear[year]) {
+                            membersByYear[year] = [];
+                        }
+                        membersByYear[year].push(member);
+                    });
+                    
+                    // Sort years in descending order
+                    const sortedYears = Object.keys(membersByYear).sort((a, b) => {
+                        const yearA = parseInt(a);
+                        const yearB = parseInt(b);
+                        if (isNaN(yearA) || isNaN(yearB)) return 0;
+                        return yearB - yearA;
+                    });
+                    
+                    // Build HTML
+                    let html = '';
+                    
+                    // Add current committee section
+                    if (currentMembers.length > 0) {
+                        html += `
+                            <div class="committee-section-header" style="grid-column: 1/-1;">
+                                <h2><i class="fas fa-star"></i> Current Committee</h2>
+                            </div>
+                        `;
+                        
+                        currentMembers.forEach((member, i) => {
+                            const originalIndex = members.indexOf(member);
+                            html += `
+                                <div class="member-card" onclick="showMemberModal('${escapeHtml(member.name)}', '${escapeHtml(member.role)}', '${escapeHtml(member.bio)}', '${member.image_url}', '${member.linkedin || ''}', '${member.github || ''}', '${member.email || ''}', '${member.year || ''}', '${member.current || '0'}')">
+                                    <img src="${member.image_url || 'images/default-avatar.jpg'}" alt="${member.name}" class="member-image">
+                                    <div class="member-info">
+                                        <h3 class="member-name">${member.name}</h3>
+                                        <p class="member-role">${member.role}</p>
+                                        ${member.year ? `<p style="color: var(--text-secondary); font-size: 0.85rem; margin: 5px 0;"><i class="fas fa-calendar"></i> ${member.year}</p>` : ''}
+                                        <p class="member-bio">${truncateText(member.bio, 100)}</p>
+                                        <div style="margin-top: 10px;">
+                                            <span class="status-badge current"><i class="fas fa-star"></i> Current</span>
+                                        </div>
+                                        <div class="member-social">
+                                            ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" onclick="event.stopPropagation()"><i class="fab fa-linkedin"></i></a>` : ''}
+                                            ${member.github ? `<a href="${member.github}" target="_blank" onclick="event.stopPropagation()"><i class="fab fa-github"></i></a>` : ''}
+                                            ${member.email ? `<a href="mailto:${member.email}" onclick="event.stopPropagation()"><i class="fas fa-envelope"></i></a>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    // Add divider between current and past
+                    if (currentMembers.length > 0 && pastMembers.length > 0) {
+                        html += `
+                            <div class="committee-divider-main" style="grid-column: 1/-1;">
+                                <div class="divider-line-main"></div>
+                                <div class="divider-label-main">All Past Committee</div>
+                                <div class="divider-line-main"></div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Add past committee section organized by year
+                    if (pastMembers.length > 0 && sortedYears.length > 0) {
+                        html += `
+                            <div class="committee-section-header" style="grid-column: 1/-1;">
+                                <h2><i class="fas fa-history"></i> Past Committee</h2>
+                            </div>
+                        `;
+                        
+                        sortedYears.forEach(year => {
+                            const yearMembers = membersByYear[year];
+                            
+                            // Add year subheader
+                            html += `
+                                <div class="year-section-header" style="grid-column: 1/-1;">
+                                    <h3><i class="fas fa-calendar-alt"></i> ${year}</h3>
+                                </div>
+                            `;
+                            
+                            // Add members for this year
+                            yearMembers.forEach(member => {
+                                const originalIndex = members.indexOf(member);
+                                html += `
+                                    <div class="member-card" onclick="showMemberModal('${escapeHtml(member.name)}', '${escapeHtml(member.role)}', '${escapeHtml(member.bio)}', '${member.image_url}', '${member.linkedin || ''}', '${member.github || ''}', '${member.email || ''}', '${member.year || ''}', '${member.current || '0'}')">
+                                        <img src="${member.image_url || 'images/default-avatar.jpg'}" alt="${member.name}" class="member-image">
+                                        <div class="member-info">
+                                            <h3 class="member-name">${member.name}</h3>
+                                            <p class="member-role">${member.role}</p>
+                                            <p class="member-bio">${truncateText(member.bio, 100)}</p>
+                                            <div style="margin-top: 10px;">
+                                                <span class="status-badge past"><i class="fas fa-clock"></i> Past</span>
+                                            </div>
+                                            <div class="member-social">
+                                                ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" onclick="event.stopPropagation()"><i class="fab fa-linkedin"></i></a>` : ''}
+                                                ${member.github ? `<a href="${member.github}" target="_blank" onclick="event.stopPropagation()"><i class="fab fa-github"></i></a>` : ''}
+                                                ${member.email ? `<a href="mailto:${member.email}" onclick="event.stopPropagation()"><i class="fas fa-envelope"></i></a>` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        });
+                    }
+                    
+                    // Show empty message if no members match filters
+                    if (currentMembers.length === 0 && pastMembers.length === 0) {
+                        html = '<p style="text-align: center; color: var(--text-secondary); padding: 40px; grid-column: 1/-1;">No members found matching your filters.</p>';
+                    }
+                    
+                    // Render to container
+                    container.innerHTML = html;
+                    console.log('Members rendered to DOM');
+                    
+                    // Apply fade-in animation
+                    const memberCards = document.querySelectorAll('.member-card');
+                    const fadeObserver = new IntersectionObserver((entries) => {
+                        entries.forEach((entry, index) => {
+                            if (entry.isIntersecting) {
+                                setTimeout(() => {
+                                    entry.target.style.opacity = '1';
+                                    entry.target.style.transform = 'translateY(0)';
+                                }, index * 100);
+                                fadeObserver.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.1 });
+
+                    memberCards.forEach(card => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        fadeObserver.observe(card);
+                    });
+                    
+                    console.log('Fade animations applied');
+                }
+                
+                // Populate year filter
+                const allYears = new Set();
+                members.forEach(member => {
+                    if (member.year) allYears.add(member.year);
+                });
+                const sortedYearsList = Array.from(allYears).sort((a, b) => {
+                    const yearA = parseInt(a);
+                    const yearB = parseInt(b);
+                    if (isNaN(yearA) || isNaN(yearB)) return 0;
+                    return yearB - yearA;
+                });
+                
+                const yearFilter = document.getElementById('yearFilter');
+                sortedYearsList.forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearFilter.appendChild(option);
+                });
+                
+                console.log('Year filter populated');
+                
+                // Setup filter event listeners
+                const statusFilter = document.getElementById('statusFilter');
+                yearFilter.addEventListener('change', applyFilters);
+                statusFilter.addEventListener('change', applyFilters);
+                
+                function applyFilters() {
+                    const selectedYear = yearFilter.value;
+                    const selectedStatus = statusFilter.value;
+                    
+                    console.log('Filters applied - Year:', selectedYear, 'Status:', selectedStatus);
+                    
+                    let filtered = members;
+                    
+                    // Filter by status
+                    if (selectedStatus === 'current') {
+                        filtered = filtered.filter(m => m.current == 1 || m.current === 'true' || m.current === true);
+                    } else if (selectedStatus === 'past') {
+                        filtered = filtered.filter(m => !(m.current == 1 || m.current === 'true' || m.current === true));
+                    }
+                    
+                    // Filter by year
+                    if (selectedYear) {
+                        filtered = filtered.filter(m => m.year === selectedYear);
+                    }
+                    
+                    console.log('Filtered members count:', filtered.length);
+                    renderMembers(filtered);
+                }
+                
+                // Initial render
+                renderMembers(members);
+                
+            } catch (error) {
+                console.error('Error in executive page:', error);
+                const container = document.getElementById('membersGrid');
+                if (container) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--danger); padding: 40px;">Error loading members: ${error.message}</p>`;
+                }
+            }
+        });
+
+        // Modal close handler
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('memberModal');
+            const closeBtn = document.querySelector('.close');
+            
+            if (closeBtn) {
+                closeBtn.onclick = () => {
+                    modal.style.display = 'none';
+                };
+            }
+            
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        });
+    </script>
+</body>
+</html>

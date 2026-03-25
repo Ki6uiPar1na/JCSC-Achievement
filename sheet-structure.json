@@ -1,0 +1,70 @@
+{
+  "spreadsheet_id": "1OSCunbN68FsPtv-aYDs79l3deU7soCgd6fCXljQ9tkE",
+  "sheets": {
+    "Achievements": {
+      "display_name": "Achievements",
+      "headers": [
+        "Title",
+        "Description",
+        "Date",
+        "Image_URL(optional)",
+        "Members Names(Comma Separated)",
+        "Prize Money(if any)"
+      ],
+      "record_count": 3
+    },
+    "Executive": {
+      "display_name": "Executive",
+      "headers": [
+        "Name",
+        "Role",
+        "Bio",
+        "Image_URL",
+        "LinkedIn",
+        "GitHub",
+        "Email"
+      ],
+      "record_count": 5
+    },
+    "Alumni": {
+      "display_name": "Alumni",
+      "headers": [
+        "Name",
+        "Batch",
+        "Position",
+        "Company",
+        "LinkedIn"
+      ],
+      "record_count": 4
+    },
+    "Events": {
+      "display_name": "Events",
+      "headers": [
+        "Title",
+        "Description",
+        "Date",
+        "Time",
+        "Location",
+        "Category",
+        "Image_URL",
+        "Gallery",
+        "Registration_Link"
+      ],
+      "record_count": 2
+    },
+    "Contests": {
+      "display_name": "Contests",
+      "headers": [
+        "Date",
+        "Name",
+        "First",
+        "Second",
+        "Third",
+        "Special_Mention",
+        "Results_Link"
+      ],
+      "record_count": 3
+    }
+  },
+  "generated_at": "2026-03-25T21:07:38.581435"
+}
