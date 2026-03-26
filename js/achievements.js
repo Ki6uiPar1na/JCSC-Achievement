@@ -59,6 +59,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Sort by date (newest first)
         data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+        // Function to extract numeric value from position
+        function getPositionValue(positionText) {
+            if (!positionText) return Infinity;
+            
+            const text = positionText.toLowerCase().trim();
+            
+            // Check for champion/first place
+            if (text.includes('champion') || text === '1st' || text === '1st place') {
+                return 1;
+            }
+            
+            // Check for 1st runner up (2)
+            if (text.includes('1st runner up') || text === '2nd' || text === '2nd place') {
+                return 2;
+            }
+            
+            // Check for 2nd runner up (3)
+            if (text.includes('2nd runner up') || text === '3rd' || text === '3rd place') {
+                return 3;
+            }
+            
+            // Check for 4th place or any numeric position
+            const numMatch = text.match(/\d+/);
+            if (numMatch) {
+                return parseInt(numMatch[0]);
+            }
+            
+            return Infinity;
+        }
+
         // Group by year
         const grouped = {};
         data.forEach(achievement => {
@@ -67,6 +97,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 grouped[year] = [];
             }
             grouped[year].push(achievement);
+        });
+
+        // Sort each year's achievements by position
+        Object.keys(grouped).forEach(year => {
+            grouped[year].sort((a, b) => {
+                const posA = getPositionValue(a.position);
+                const posB = getPositionValue(b.position);
+                return posA - posB;
+            });
         });
 
         // Build timeline HTML
