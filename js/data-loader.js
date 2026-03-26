@@ -183,9 +183,11 @@ async function loadAlumni() {
         return dataCache.alumni;
     }
     
-    
-    // Try to load from Google Sheets first
-    let data = await fetchSheetData(CONFIG.SHEETS.ALUMNI);
+    // Try to load from Google Sheets first with timeout
+    let data = await Promise.race([
+        fetchSheetData(CONFIG.SHEETS.ALUMNI),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
+    ]).catch(() => null);
     
     // Final fallback to embedded sample data
     if (!data || data.length === 0) {

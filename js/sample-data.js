@@ -87,14 +87,14 @@ const SAMPLE_DATA = {
     alumni: [
         {
             name: "James Wilson",
-            batch: "2023",
+            batch: "2020",
             position: "Senior Security Analyst",
             company: "Google",
             linkedin: "https://linkedin.com/in/jameswilson"
         },
         {
             name: "Maria Garcia",
-            batch: "2023",
+            batch: "2020",
             position: "Penetration Tester",
             company: "Microsoft",
             linkedin: "https://linkedin.com/in/mariagarcia"
@@ -105,6 +105,27 @@ const SAMPLE_DATA = {
             position: "Security Engineer",
             company: "Amazon",
             linkedin: "https://linkedin.com/in/robertjohnson"
+        },
+        {
+            name: "Sarah Chen",
+            batch: "2019",
+            position: "Chief Information Security Officer",
+            company: "Tech Corp",
+            linkedin: "https://linkedin.com/in/sarahchen"
+        },
+        {
+            name: "Ahmed Hassan",
+            batch: "2018",
+            position: "Security Architect",
+            company: "IBM",
+            linkedin: "https://linkedin.com/in/ahmedhassan"
+        },
+        {
+            name: "Priya Sharma",
+            batch: "2017",
+            position: "Cyber Security Manager",
+            company: "JPMorgan Chase",
+            linkedin: "https://linkedin.com/in/priyasharma"
         }
     ],
     

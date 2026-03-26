@@ -1,10 +1,14 @@
 // Alumni page functionality
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Alumni page loading...');
     const alumni = await loadAlumni();
     
-    if (!alumni) {
-        showError('alumniList', 'Failed to load alumni data. Please check your configuration.');
+    console.log('Alumni data loaded:', alumni);
+    
+    if (!alumni || alumni.length === 0) {
+        console.log('No alumni found, showing message');
+        document.getElementById('alumniList').innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No alumni data available.</p>';
         return;
     }
 
@@ -14,9 +18,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('totalAlumni').textContent = alumni.length;
     const uniqueCompanies = [...new Set(alumni.map(a => a.company).filter(c => c))].length;
     document.getElementById('totalCompanies').textContent = uniqueCompanies;
+    console.log('Stats updated: ', alumni.length, 'alumni,', uniqueCompanies, 'companies');
 
-    // Populate filters
-    const batches = [...new Set(alumni.map(a => a.batch))].sort((a, b) => b - a);
+    // Populate filters - sort batches in decreasing order (most senior first)
+    const batches = [...new Set(alumni.map(a => a.batch))]
+        .map(b => parseInt(b))
+        .sort((a, b) => b - a);
     const batchFilter = document.getElementById('batchFilter');
     batches.forEach(batch => {
         const option = document.createElement('option');
@@ -43,10 +50,33 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // Sort by batch (newest first)
-        data.sort((a, b) => b.batch - a.batch);
+        console.log('displayList data:', data);
 
-        container.innerHTML = data.map(alumnus => `
+        // Group by batch and sort batches in decreasing order (most senior first)
+        const groupedByBatch = {};
+        data.forEach(alumnus => {
+            const batch = (alumnus.batch || '').toString().trim();
+            if (!groupedByBatch[batch]) {
+                groupedByBatch[batch] = [];
+            }
+            groupedByBatch[batch].push(alumnus);
+        });
+
+        const sortedBatches = Object.keys(groupedByBatch)
+            .map(b => parseInt(b))
+            .filter(b => !isNaN(b))
+            .sort((a, b) => b - a);
+
+        let html = '';
+        sortedBatches.forEach(batchNum => {
+            const batchKey = batchNum.toString();
+            if (!groupedByBatch[batchKey] || groupedByBatch[batchKey].length === 0) {
+                return;
+            }
+            console.log('Processing batch:', batchKey, 'with', groupedByBatch[batchKey].length, 'alumni');
+            
+            html += `<div class="batch-section"><h3 class="batch-title">Batch ${batchKey}</h3>`;
+            html += groupedByBatch[batchKey].map(alumnus => `
             <div class="alumni-list-item">
                 <div class="alumni-list-image-wrapper" style="position: relative;">
                     ${alumnus.image_url ? `
@@ -62,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="alumni-list-content">
                     <div>
-                        <h3 class="alumni-list-name">${alumnus.name}</h3>
+                        <h3 class="alumni-list-name">${alumnus.name || 'Unknown'}</h3>
                         ${alumnus.position ? `<p class="alumni-list-role">${alumnus.position}</p>` : ''}
                     </div>
                     <div class="alumni-list-info">
@@ -87,6 +117,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             </div>
         `).join('');
+            html += '</div>';
+        });
+
+        console.log('Final HTML length:', html.length);
+        container.innerHTML = html;
+        console.log('Alumni list rendered successfully');
     }
 
     // Search functionality
@@ -119,6 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Initial display
+    console.log('Calling initial displayList with alumni:', alumni.length);
     displayList(alumni);
 });
 
