@@ -138,10 +138,79 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Utility function to format dates
+// Utility function to format dates - handles multiple date formats
 function formatDate(dateString) {
+    if (!dateString || dateString.trim() === '') {
+        return 'Date not available';
+    }
+    
+    let date;
+    const trimmed = dateString.trim();
+    
+    // Try to parse the date string
+    // Format: M-DD-YYYY (4-17-2023)
+    const dashFormat = trimmed.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+    if (dashFormat) {
+        date = new Date(dashFormat[3], parseInt(dashFormat[1]) - 1, dashFormat[2]);
+    }
+    
+    // Format: "November 16, 2024" or "November 16 2024"
+    if (!date || isNaN(date.getTime())) {
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+        const monthRegex = new RegExp(`(${monthNames.join('|')})\\s+(\\d{1,2})[,\\s]+(\\d{4})`, 'i');
+        const monthMatch = trimmed.match(monthRegex);
+        
+        if (monthMatch) {
+            const monthIndex = monthNames.findIndex(m => m.toLowerCase() === monthMatch[1].toLowerCase());
+            date = new Date(monthMatch[3], monthIndex, monthMatch[2]);
+        }
+    }
+    
+    // Format: "DD Month YYYY" (8 December, 2024 or 8 December 2024 or 09 March, 2025)
+    if (!date || isNaN(date.getTime())) {
+        const dayMonthFormat = /^(\d{1,2})\s+([a-zA-Z]+)[,\s]+(\\d{4})$/;
+        const dayMonthMatch = trimmed.match(dayMonthFormat);
+        
+        if (dayMonthMatch) {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthIndex = monthNames.findIndex(m => m.toLowerCase() === dayMonthMatch[2].toLowerCase());
+            if (monthIndex !== -1) {
+                date = new Date(dayMonthMatch[3], monthIndex, dayMonthMatch[1]);
+            }
+        }
+    }
+    
+    // Format: "YYYY-MM-DD" (standard ISO format)
+    if (!date || isNaN(date.getTime())) {
+        const isoFormat = trimmed.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (isoFormat) {
+            date = new Date(isoFormat[1], parseInt(isoFormat[2]) - 1, isoFormat[3]);
+        }
+    }
+    
+    // Format: "DD/MM/YYYY"
+    if (!date || isNaN(date.getTime())) {
+        const slashFormat = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if (slashFormat) {
+            date = new Date(slashFormat[3], parseInt(slashFormat[2]) - 1, slashFormat[1]);
+        }
+    }
+    
+    // If still no valid date, try generic Date parsing as last resort
+    if (!date || isNaN(date.getTime())) {
+        date = new Date(dateString);
+    }
+    
+    // Check if we have a valid date
+    if (isNaN(date.getTime())) {
+        return trimmed; // Return original string if can't parse
+    }
+    
+    // Format as: "Month DD, YYYY" (e.g., "April 17, 2023")
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+    return date.toLocaleDateString('en-US', options);
 }
 
 // Utility function to check if date is upcoming

@@ -135,8 +135,18 @@ function openEventLightbox(index) {
     const images = event.gallery ? event.gallery.split('|').filter(img => img.trim()) : [];
     const upcoming = isUpcoming(event.date);
     
+    let imageHTML = '';
+    if (event.image_url && event.image_url.trim()) {
+        imageHTML = `
+            <div style="margin-bottom: 20px;">
+                <img src="${event.image_url}" alt="${event.title}" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; border: 2px solid var(--primary-color);">
+            </div>
+        `;
+    }
+    
     modalBody.innerHTML = `
-        <div style="max-width: 600px;">
+        <div style="max-width: 700px;">
+            ${imageHTML}
             <h2 style="color: var(--primary-color); margin-bottom: 15px;">${event.title}</h2>
             <div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
                 <div>

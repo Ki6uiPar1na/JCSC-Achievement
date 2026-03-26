@@ -264,10 +264,28 @@ async function loadFromCSV(filename) {
 // Initialize data on homepage
 if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/Website/')) {
     document.addEventListener('DOMContentLoaded', async () => {
-        // Load key achievements (top 3)
+        // Load key achievements with prize money (random 3)
         const achievements = await loadAchievements();
         if (achievements && achievements.length > 0) {
-            displayKeyAchievements(achievements.slice(0, 3));
+            // Filter achievements that have prize money
+            const achievementsWithPrize = achievements.filter(a => a.prize && a.prize.trim());
+            
+            // Shuffle array to randomize
+            const shuffled = achievementsWithPrize.sort(() => 0.5 - Math.random());
+            
+            // Get first 3 random achievements with prize
+            const randomAchievements = shuffled.slice(0, 3);
+            
+            // If we have less than 3, add more from all achievements
+            if (randomAchievements.length < 3) {
+                const remaining = achievements
+                    .filter(a => !randomAchievements.includes(a))
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, 3 - randomAchievements.length);
+                randomAchievements.push(...remaining);
+            }
+            
+            displayKeyAchievements(randomAchievements);
         }
 
         // Load upcoming events (top 3)
