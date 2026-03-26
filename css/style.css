@@ -2620,8 +2620,8 @@ ul {
 /* Lightbox Close Button */
 .gallery-lightbox-close {
     position: absolute;
-    top: -50px;
-    right: 0;
+    top: 20px;
+    right: 20px;
     background: rgba(255, 0, 85, 0.1);
     border: 2px solid var(--danger);
     color: var(--danger);
