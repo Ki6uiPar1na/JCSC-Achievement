@@ -125,7 +125,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const originalIndex = members.indexOf(member);
                     html += `
                         <div class="member-card" data-member-index="${originalIndex}">
-                            <img src="${member.image_url || 'images/default-avatar.jpg'}" alt="${member.name}" class="member-image">
+                            <img src="${member.image_url || ''}" alt="${member.name}" class="member-image" onerror="this.style.display='none'; this.parentElement.querySelector('.member-image-placeholder').style.display='flex';" ${!member.image_url ? 'style="display:none;"' : ''}>
+                            <div class="member-image-placeholder" style="${member.image_url ? 'display:none;' : 'display:flex;'} width: 100%; height: 220px; background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%); align-items: center; justify-content: center;">
+                                <i class="fas fa-user" style="font-size: 3rem; color: var(--text-secondary);"></i>
+                            </div>
                             <div class="member-info">
                                 <h3 class="member-name">${member.name}</h3>
                                 <p class="member-role">${member.role}</p>
@@ -179,7 +182,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const originalIndex = members.indexOf(member);
                         html += `
                             <div class="member-card" data-member-index="${originalIndex}">
-                                <img src="${member.image_url || 'images/default-avatar.jpg'}" alt="${member.name}" class="member-image">
+                                <img src="${member.image_url || ''}" alt="${member.name}" class="member-image" onerror="this.style.display='none'; this.parentElement.querySelector('.member-image-placeholder').style.display='flex';" ${!member.image_url ? 'style="display:none;"' : ''}>
+                                <div class="member-image-placeholder" style="${member.image_url ? 'display:none;' : 'display:flex;'} width: 100%; height: 220px; background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%); align-items: center; justify-content: center;">
+                                    <i class="fas fa-user" style="font-size: 3rem; color: var(--text-secondary);"></i>
+                                </div>
                                 <div class="member-info">
                                     <h3 class="member-name">${member.name}</h3>
                                     <p class="member-role">${member.role}</p>

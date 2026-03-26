@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             return `
                 <div class="event-gallery-item" data-index="${index}" ${hasImage ? 'onclick="openEventLightbox(' + index + ')"' : ''} style="${!hasImage ? 'cursor: default;' : ''}">
                     ${hasImage ? `
-                        <img src="${event.image_url}" alt="${event.title}" class="event-gallery-image" onerror="this.src='images/placeholder.jpg'">
+                        <img src="${event.image_url}" alt="${event.title}" class="event-gallery-image" onerror="this.style.display='none'; this.parentElement.querySelector('.event-image-placeholder').style.display='flex';">
+                        <div class="event-image-placeholder" style="display:none; width: 100%; height: 180px; background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 65, 0.1) 100%); align-items: center; justify-content: center;">
+                            <i class="fas fa-image" style="font-size: 2rem; color: var(--text-secondary);"></i>
+                        </div>
                         <div class="event-gallery-overlay">
                             <i class="fas fa-search-plus overlay-icon"></i>
                         </div>

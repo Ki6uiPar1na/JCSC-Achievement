@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         showError('contestsContainer', 'Failed to load contests. Please check your configuration.');
         return;
     }
+    
+    // Debug: Show first contest structure
+    if (contests.length > 0) {
+        window.DEBUG_FIRST_CONTEST = contests[0];
+    }
 
     let filteredContests = [...contests];
 
@@ -75,6 +80,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="contest-card">
                     <div class="contest-card-content">
                         <h3 class="contest-name">${escapeHtml(contest.name)}</h3>
+                        ${contest.date ? `
+                            <p class="contest-date">
+                                <i class="fas fa-calendar"></i> ${escapeHtml(contest.date)}
+                            </p>
+                        ` : ''}
                         
                         ${winnersHTML ? `
                             <div class="contest-winners">

@@ -44,6 +44,13 @@ function mapAchievementRow(row) {
     // Get date
     const date = getField(row, ['Date', 'date']);
     
+    // Get position - Google Sheets has: Position (e.g., 1st Place, 2nd Place, etc.)
+    const position = getField(row, [
+        'Position', 'position',
+        'Rank', 'rank',
+        'Award', 'award'
+    ]);
+    
     // Get image URL - Google Sheets has: Image_URL(optional)
     const image_url = getField(row, [
         'Image_URL', 'image_url',
@@ -58,6 +65,13 @@ function mapAchievementRow(row) {
         'Team', 'team'
     ]);
     
+    // Get team name - Google Sheets has: Team_name
+    const team_name = getField(row, [
+        'Team_name', 'team_name',
+        'Team Name', 'team_name',
+        'Team Name(if any)', 'team_name_if_any'
+    ]);
+    
     // Get prize - Google Sheets has: Prize Money(if any)
     const prize = getField(row, [
         'Prize', 'prize',
@@ -69,8 +83,10 @@ function mapAchievementRow(row) {
         title: title.trim(),
         description: description.trim(),
         date: date,
+        position: position,  // Add position field
         image_url: image_url,
         members: members,  // Add as separate field
+        team_name: team_name,  // Add team name field
         prize: prize       // Add as separate field
     };
 }

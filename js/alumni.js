@@ -50,7 +50,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="alumni-list-item">
                 <div class="alumni-list-image-wrapper" style="position: relative;">
                     ${alumnus.image_url ? `
-                        <img src="${alumnus.image_url}" alt="${alumnus.name}" class="alumni-list-image" onerror="this.src='images/placeholder.jpg'">
+                        <img src="${alumnus.image_url}" alt="${alumnus.name}" class="alumni-list-image" onerror="this.style.display='none'; this.parentElement.querySelector('.alumni-image-placeholder').style.display='flex';">
+                        <div class="alumni-image-placeholder" style="display:none; width: 150px; height: 150px; background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%); align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="font-size: 2rem; color: var(--text-secondary);"></i>
+                        </div>
                     ` : `
                         <div style="width: 150px; height: 150px; background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%); display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-user" style="font-size: 2rem; color: var(--text-secondary);"></i>

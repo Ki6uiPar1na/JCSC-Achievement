@@ -91,29 +91,45 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <div class="achievement-timeline-card ${hasImage ? 'clickable' : ''}" ${hasImage ? `onclick="openAchievementLightbox(${achievementsData.indexOf(achievement)})"` : ''}>
                                 ${achievement.position ? `<span class="achievement-timeline-position">${achievement.position}</span>` : ''}
                                 ${hasImage ? `
-                                    <img src="${achievement.image_url}" alt="${achievement.title}" class="achievement-timeline-image" onerror="this.src='images/placeholder.jpg'">
-                                ` : `
-                                    <div class="achievement-timeline-image-placeholder">
+                                    <img src="${achievement.image_url}" alt="${achievement.title}" class="achievement-timeline-image" onerror="this.style.display='none'; this.parentElement.querySelector('.achievement-timeline-image-placeholder').style.display='flex';">
+                                    <div class="achievement-timeline-image-placeholder" style="display:none;">
                                         <i class="fas fa-image"></i>
                                     </div>
-                                `}
+                                ` : ''}
                                 <div class="achievement-timeline-card-info">
                                     <h3>${achievement.title}</h3>
+                                    ${achievement.team_name ? `
+                                        <div class="achievement-timeline-detail">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <div>
+                                                <strong>Team</strong>
+                                                <span>${achievement.team_name}</span>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                    ${achievement.members ? `
+                                        <div class="achievement-timeline-detail">
+                                            <i class="fas fa-users"></i>
+                                            <div>
+                                                <strong>Members</strong>
+                                                <span>${achievement.members}</span>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                    ${achievement.prize ? `
+                                        <div class="achievement-timeline-detail">
+                                            <i class="fas fa-trophy"></i>
+                                            <div>
+                                                <strong>Prize Money</strong>
+                                                <span>${achievement.prize}</span>
+                                            </div>
+                                        </div>
+                                    ` : ''}
                                     <div class="achievement-timeline-meta">
                                         <span class="achievement-timeline-date">
                                             <i class="fas fa-calendar"></i> ${formatDate(achievement.date)}
                                         </span>
                                     </div>
-                                    ${achievement.members ? `
-                                        <div class="achievement-timeline-detail">
-                                            <i class="fas fa-users"></i> ${achievement.members}
-                                        </div>
-                                    ` : ''}
-                                    ${achievement.prize ? `
-                                        <div class="achievement-timeline-detail">
-                                            <i class="fas fa-trophy"></i> ${achievement.prize}
-                                        </div>
-                                    ` : ''}
                                 </div>
                             </div>
                         </div>
@@ -158,9 +174,21 @@ function updateAchievementLightbox() {
     const index = parseInt(element.dataset.index);
     const achievement = achievementsData[index];
     
-    document.getElementById('lightboxImage').src = achievement.image_url || 'images/placeholder.jpg';
+    const lightboxImg = document.getElementById('lightboxImage');
+    
+    if (achievement.image_url && achievement.image_url.trim()) {
+        lightboxImg.src = achievement.image_url;
+        lightboxImg.onerror = function() {
+            this.style.display = 'none';
+            const placeholder = this.parentElement.querySelector('.achievement-timeline-image-placeholder');
+            if (placeholder) placeholder.style.display = 'flex';
+        };
+    } else {
+        lightboxImg.style.display = 'none';
+    }
+    
     document.getElementById('lightboxTitle').textContent = achievement.title;
-    document.getElementById('lightboxDescription').textContent = achievement.position || 'No position available';
+    document.getElementById('lightboxDescription').textContent = (achievement.position ? `Position: ${achievement.position}` : 'No position available');
     
     const detailsContainer = document.getElementById('lightboxDetails');
     detailsContainer.innerHTML = '';
@@ -174,10 +202,19 @@ function updateAchievementLightbox() {
         `;
     }
     
+    if (achievement.team_name) {
+        detailsContainer.innerHTML += `
+            <div class="gallery-lightbox-detail-item">
+                <div class="gallery-lightbox-detail-label"><i class="fas fa-shield-alt"></i> Team</div>
+                <div class="gallery-lightbox-detail-value">${achievement.team_name}</div>
+            </div>
+        `;
+    }
+    
     if (achievement.members) {
         detailsContainer.innerHTML += `
             <div class="gallery-lightbox-detail-item">
-                <div class="gallery-lightbox-detail-label"><i class="fas fa-users"></i> Team</div>
+                <div class="gallery-lightbox-detail-label"><i class="fas fa-users"></i> Members</div>
                 <div class="gallery-lightbox-detail-value">${achievement.members}</div>
             </div>
         `;
