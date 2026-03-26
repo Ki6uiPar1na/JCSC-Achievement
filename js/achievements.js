@@ -84,11 +84,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             achievements.forEach((achievement, index) => {
                 const hasImage = achievement.image_url && achievement.image_url.trim();
+                const achievementIndex = achievementsData.indexOf(achievement);
                 timelineHTML += `
                     <div class="achievement-timeline-item ${index % 2 === 0 ? 'left' : 'right'}">
                         <div class="achievement-timeline-dot"></div>
                         <div class="achievement-timeline-content">
-                            <div class="achievement-timeline-card ${hasImage ? 'clickable' : ''}" ${hasImage ? `onclick="openAchievementLightbox(${achievementsData.indexOf(achievement)})"` : ''}>
+                            <div class="achievement-timeline-card clickable" onclick="openAchievementLightbox(${achievementIndex})">
                                 ${achievement.position ? `<span class="achievement-timeline-position">${achievement.position}</span>` : ''}
                                 ${hasImage ? `
                                     <img src="${achievement.image_url}" alt="${achievement.title}" class="achievement-timeline-image" onerror="this.style.display='none'; this.parentElement.querySelector('.achievement-timeline-image-placeholder').style.display='flex';">
@@ -108,11 +109,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                                         </div>
                                     ` : ''}
                                     ${achievement.members ? `
-                                        <div class="achievement-timeline-detail">
-                                            <i class="fas fa-users"></i>
-                                            <div>
+                                        <div class="achievement-timeline-members-container">
+                                            <div class="achievement-timeline-members-label">
+                                                <i class="fas fa-users"></i>
                                                 <strong>Members</strong>
-                                                <span>${achievement.members}</span>
+                                            </div>
+                                            <div class="achievement-timeline-members-badges">
+                                                ${achievement.members.split(',').map((member, idx) => {
+                                                    const trimmed = member.trim();
+                                                    const colors = ['#00ff41', '#00d4ff', '#ff006e', '#ffbe0b', '#8338ec', '#3a86ff', '#06ffa5'];
+                                                    const bgColor = colors[idx % colors.length];
+                                                    return `<span class="achievement-member-badge" style="background-color: ${bgColor}; border-color: ${bgColor};">${trimmed}</span>`;
+                                                }).join('')}
                                             </div>
                                         </div>
                                     ` : ''}
@@ -120,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                         <div class="achievement-timeline-detail">
                                             <i class="fas fa-trophy"></i>
                                             <div>
-                                                <strong>Prize Money</strong>
+                                                <strong>Prize</strong>
                                                 <span>${achievement.prize}</span>
                                             </div>
                                         </div>
@@ -167,21 +175,18 @@ function openAchievementLightbox(index) {
  * Update lightbox content
  */
 function updateAchievementLightbox() {
-    const filtered = document.querySelectorAll('.achievement-gallery-item');
-    if (currentLightboxIndex >= filtered.length) return;
+    const index = currentLightboxIndex;
+    if (index >= achievementsData.length) return;
     
-    const element = filtered[currentLightboxIndex];
-    const index = parseInt(element.dataset.index);
     const achievement = achievementsData[index];
     
     const lightboxImg = document.getElementById('lightboxImage');
     
     if (achievement.image_url && achievement.image_url.trim()) {
         lightboxImg.src = achievement.image_url;
+        lightboxImg.style.display = 'block';
         lightboxImg.onerror = function() {
             this.style.display = 'none';
-            const placeholder = this.parentElement.querySelector('.achievement-timeline-image-placeholder');
-            if (placeholder) placeholder.style.display = 'flex';
         };
     } else {
         lightboxImg.style.display = 'none';
@@ -212,10 +217,18 @@ function updateAchievementLightbox() {
     }
     
     if (achievement.members) {
+        const memberBadges = achievement.members.split(',').map((member, idx) => {
+            const trimmed = member.trim();
+            const colors = ['#00ff41', '#00d4ff', '#ff006e', '#ffbe0b', '#8338ec', '#3a86ff', '#06ffa5'];
+            const bgColor = colors[idx % colors.length];
+            return `<span class="achievement-member-badge" style="background-color: ${bgColor}; border-color: ${bgColor};">${trimmed}</span>`;
+        }).join('');
         detailsContainer.innerHTML += `
-            <div class="gallery-lightbox-detail-item">
+            <div class="gallery-lightbox-members">
                 <div class="gallery-lightbox-detail-label"><i class="fas fa-users"></i> Members</div>
-                <div class="gallery-lightbox-detail-value">${achievement.members}</div>
+                <div class="gallery-lightbox-members-badges">
+                    ${memberBadges}
+                </div>
             </div>
         `;
     }
@@ -224,7 +237,7 @@ function updateAchievementLightbox() {
         detailsContainer.innerHTML += `
             <div class="gallery-lightbox-detail-item">
                 <div class="gallery-lightbox-detail-label"><i class="fas fa-trophy"></i> Prize</div>
-                <div class="gallery-lightbox-detail-value">${achievement.prize}</div>
+                <div class="gallery-lightbox-detail-value prize-highlight">${achievement.prize}</div>
             </div>
         `;
     }
@@ -289,7 +302,6 @@ function setupAchievementLightbox() {
  * Navigate to previous image
  */
 function prevAchievementImage() {
-    const filtered = document.querySelectorAll('.achievement-gallery-item');
     if (currentLightboxIndex > 0) {
         currentLightboxIndex--;
         updateAchievementLightbox();
@@ -300,8 +312,7 @@ function prevAchievementImage() {
  * Navigate to next image
  */
 function nextAchievementImage() {
-    const filtered = document.querySelectorAll('.achievement-gallery-item');
-    if (currentLightboxIndex < filtered.length - 1) {
+    if (currentLightboxIndex < achievementsData.length - 1) {
         currentLightboxIndex++;
         updateAchievementLightbox();
     }
