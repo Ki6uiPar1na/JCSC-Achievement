@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('totalCompanies').textContent = uniqueCompanies;
     console.log('Stats updated: ', alumni.length, 'alumni,', uniqueCompanies, 'companies');
 
-    // Populate filters - sort batches in decreasing order (most senior first)
+    // Populate filters - sort batches in increasing order (lowest to highest year)
     const batches = [...new Set(alumni.map(a => a.batch))]
         .map(b => parseInt(b))
-        .sort((a, b) => b - a);
+        .sort((a, b) => a - b);
     const batchFilter = document.getElementById('batchFilter');
     batches.forEach(batch => {
         const option = document.createElement('option');
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         console.log('displayList data:', data);
 
-        // Group by batch and sort batches in decreasing order (most senior first)
+        // Group by batch and sort batches in increasing order (lowest to highest year)
         const groupedByBatch = {};
         data.forEach(alumnus => {
             const batch = (alumnus.batch || '').toString().trim();
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const sortedBatches = Object.keys(groupedByBatch)
             .map(b => parseInt(b))
             .filter(b => !isNaN(b))
-            .sort((a, b) => b - a);
+            .sort((a, b) => a - b);
 
         let html = '';
         sortedBatches.forEach(batchNum => {
