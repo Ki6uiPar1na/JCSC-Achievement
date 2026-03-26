@@ -24,10 +24,58 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        // Function to parse date string into Date object
+        function parseDate(dateString) {
+            if (!dateString) return new Date(0);
+            
+            const trimmed = dateString.trim();
+            
+            // Format: M-DD-YYYY (4-17-2023)
+            const dashFormat = trimmed.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+            if (dashFormat) {
+                return new Date(dashFormat[3], parseInt(dashFormat[1]) - 1, dashFormat[2]);
+            }
+            
+            // Format: "Month DD, YYYY" or "Month DD YYYY"
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthRegex = new RegExp(`(${monthNames.join('|')})\\s+(\\d{1,2})[,\\s]+(\\d{4})`, 'i');
+            const monthMatch = trimmed.match(monthRegex);
+            if (monthMatch) {
+                const monthIndex = monthNames.findIndex(m => m.toLowerCase() === monthMatch[1].toLowerCase());
+                return new Date(monthMatch[3], monthIndex, monthMatch[2]);
+            }
+            
+            // Format: "DD Month YYYY"
+            const dayMonthFormat = /^(\d{1,2})\s+([a-zA-Z]+)[,\s]+(\d{4})$/;
+            const dayMonthMatch = trimmed.match(dayMonthFormat);
+            if (dayMonthMatch) {
+                const monthIndex = monthNames.findIndex(m => m.toLowerCase() === dayMonthMatch[2].toLowerCase());
+                if (monthIndex !== -1) {
+                    return new Date(dayMonthMatch[3], monthIndex, dayMonthMatch[1]);
+                }
+            }
+            
+            // Format: "YYYY-MM-DD"
+            const isoFormat = trimmed.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+            if (isoFormat) {
+                return new Date(isoFormat[1], parseInt(isoFormat[2]) - 1, isoFormat[3]);
+            }
+            
+            // Format: "DD/MM/YYYY"
+            const slashFormat = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (slashFormat) {
+                return new Date(slashFormat[3], parseInt(slashFormat[2]) - 1, slashFormat[1]);
+            }
+            
+            // Fallback to generic Date parsing
+            return new Date(dateString);
+        }
+
         // Sort by date (newest first)
         data.sort((a, b) => {
-            const dateA = a.date ? new Date(a.date) : new Date(0);
-            const dateB = b.date ? new Date(b.date) : new Date(0);
+            const dateA = parseDate(a.date);
+            const dateB = parseDate(b.date);
             return dateB - dateA;
         });
 
