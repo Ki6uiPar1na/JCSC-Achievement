@@ -1,0 +1,87 @@
+Sheet Columns Report
+Generated: 2026-03-27T06:02:49.956Z
+
+Spreadsheet ID: 1OSCunbN68FsPtv-aYDs79l3deU7soCgd6fCXljQ9tkE
+================================================================================
+
+Sheet: Achievements
+----------------------------------------
+Total Columns: 8
+Columns:
+  1. Title
+  2. Position
+  3. Date
+  4. image_id
+  5. Members
+  6. Team_name
+  7. Prize
+  8. Link
+
+Sheet: Executive
+----------------------------------------
+Total Columns: 9
+Columns:
+  1. Name
+  2. Role
+  3. Bio
+  4. Image_id
+  5. LinkedIn
+  6. GitHub
+  7. Email
+  8. Year
+  9. Current
+
+Sheet: Alumni
+----------------------------------------
+Total Columns: 6
+Columns:
+  1. Name
+  2. Batch
+  3. Position
+  4. Company
+  5. LinkedIn
+  6. image_id
+
+Sheet: Events
+----------------------------------------
+Total Columns: 9
+Columns:
+  1. Title
+  2. Description
+  3. Date
+  4. Time
+  5. Location
+  6. Category
+  7. Image_id
+  8. Gallery
+  9. Registration_Link
+
+Sheet: Contests
+----------------------------------------
+Total Columns: 7
+Columns:
+  1. Date
+  2. Name
+  3. First
+  4. Second
+  5. Third
+  6. Special_Mention
+  7. Results_Link
+
+Sheet: Images
+----------------------------------------
+Total Columns: 3
+Columns:
+  1. image_id
+  2. name
+  3. image_url
+
+================================================================================
+All Sheets in Spreadsheet:
+----------------------------------------
+1. Achievements (1000 rows, 28 cols)
+2. Alumni (1000 rows, 26 cols)
+3. Events (1000 rows, 26 cols)
+4. Executive (1000 rows, 26 cols)
+5. Contests (1000 rows, 26 cols)
+6. Images (1004 rows, 26 cols)
