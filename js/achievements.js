@@ -43,13 +43,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             return matchesSearch && matchesYear;
         });
 
-        // Update timeline view
-        displayTimeline(filteredAchievements);
+        // Update gallery view
+        displayGallery(filteredAchievements);
     }
 
-    // Display achievements in timeline
-    function displayTimeline(data) {
-        const container = document.getElementById('achievementsTimeline');
+    // Display achievements in gallery grid
+    function displayGallery(data) {
+        const container = document.getElementById('achievementsGallery');
         
         if (!data || data.length === 0) {
             container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No achievements found.</p>';
@@ -59,37 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Sort by date (newest first)
         data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        // Function to extract numeric value from position
-        function getPositionValue(positionText) {
-            if (!positionText) return Infinity;
-            
-            const text = positionText.toLowerCase().trim();
-            
-            // Check for champion/first place
-            if (text.includes('champion') || text === '1st' || text === '1st place') {
-                return 1;
-            }
-            
-            // Check for 1st runner up (2)
-            if (text.includes('1st runner up') || text === '2nd' || text === '2nd place') {
-                return 2;
-            }
-            
-            // Check for 2nd runner up (3)
-            if (text.includes('2nd runner up') || text === '3rd' || text === '3rd place') {
-                return 3;
-            }
-            
-            // Check for 4th place or any numeric position
-            const numMatch = text.match(/\d+/);
-            if (numMatch) {
-                return parseInt(numMatch[0]);
-            }
-            
-            return Infinity;
-        }
-
-        // Group by year
+        // Group achievements by year
         const grouped = {};
         data.forEach(achievement => {
             const year = new Date(achievement.date).getFullYear();
@@ -99,106 +69,77 @@ document.addEventListener('DOMContentLoaded', async () => {
             grouped[year].push(achievement);
         });
 
-        // Sort each year's achievements by position
-        Object.keys(grouped).forEach(year => {
-            grouped[year].sort((a, b) => {
-                const posA = getPositionValue(a.position);
-                const posB = getPositionValue(b.position);
-                return posA - posB;
-            });
-        });
-
-        // Build timeline HTML
-        let timelineHTML = '<div class="achievement-timeline-container">';
+        // Build gallery HTML with year sections
+        let galleryHTML = '<div class="achievement-gallery-container">';
         
+        // Sort years in descending order
         Object.keys(grouped).sort((a, b) => b - a).forEach(year => {
-            const achievements = grouped[year];
-            timelineHTML += `
-                <div class="achievement-timeline-year-section">
-                    <div class="achievement-timeline-year-header">
+            const yearAchievements = grouped[year];
+            galleryHTML += `
+                <div class="achievement-gallery-year-section">
+                    <div class="achievement-gallery-year-header">
                         <h2>${year}</h2>
+                        <span class="achievement-count">${yearAchievements.length} achievement${yearAchievements.length !== 1 ? 's' : ''}</span>
                     </div>
-                    <div class="achievement-timeline-items">
+                    <div class="achievement-gallery-grid">
             `;
             
-            achievements.forEach((achievement, index) => {
+            yearAchievements.forEach((achievement, index) => {
                 const hasImage = achievement.image_url && achievement.image_url.trim();
                 const achievementIndex = achievementsData.indexOf(achievement);
-                timelineHTML += `
-                    <div class="achievement-timeline-item ${index % 2 === 0 ? 'left' : 'right'}">
-                        <div class="achievement-timeline-dot"></div>
-                        <div class="achievement-timeline-content">
-                            <div class="achievement-timeline-card clickable" onclick="openAchievementLightbox(${achievementIndex})">
-                                ${achievement.position ? `<span class="achievement-timeline-position">${achievement.position}</span>` : ''}
-                                ${hasImage ? `
-                                    <img src="${achievement.image_url}" alt="${achievement.title}" class="achievement-timeline-image" onerror="this.style.display='none'; this.parentElement.querySelector('.achievement-timeline-image-placeholder').style.display='flex';">
-                                    <div class="achievement-timeline-image-placeholder" style="display:none;">
-                                        <i class="fas fa-image"></i>
-                                    </div>
-                                ` : ''}
-                                <div class="achievement-timeline-card-info">
-                                    <h3>${achievement.title}</h3>
-                                    ${achievement.team_name ? `
-                                        <div class="achievement-timeline-detail">
-                                            <i class="fas fa-shield-alt"></i>
-                                            <div>
-                                                <strong>Team</strong>
-                                                <span>${achievement.team_name}</span>
-                                            </div>
-                                        </div>
-                                    ` : ''}
-                                    ${achievement.members ? `
-                                        <div class="achievement-timeline-members-container">
-                                            <div class="achievement-timeline-members-label">
-                                                <i class="fas fa-users"></i>
-                                                <strong>Members</strong>
-                                            </div>
-                                            <div class="achievement-timeline-members-badges">
-                                                ${achievement.members.split(',').map((member, idx) => {
-                                                    const trimmed = member.trim();
-                                                    const colors = ['#00ff41', '#00d4ff', '#ff006e', '#ffbe0b', '#8338ec', '#3a86ff', '#06ffa5'];
-                                                    const bgColor = colors[idx % colors.length];
-                                                    return `<span class="achievement-member-badge" style="background-color: ${bgColor}; border-color: ${bgColor};">${trimmed}</span>`;
-                                                }).join('')}
-                                            </div>
-                                        </div>
-                                    ` : ''}
-                                    ${achievement.prize ? `
-                                        <div class="achievement-timeline-detail">
-                                            <i class="fas fa-trophy"></i>
-                                            <div>
-                                                <strong>Prize</strong>
-                                                <span>${achievement.prize}</span>
-                                            </div>
-                                        </div>
-                                    ` : ''}
-                                    <div class="achievement-timeline-meta">
-                                        <span class="achievement-timeline-date">
-                                            <i class="fas fa-calendar"></i> ${formatDate(achievement.date)}
-                                        </span>
-                                    </div>
+                
+                galleryHTML += `
+                    <div class="achievement-gallery-card clickable" onclick="openAchievementLightbox(${achievementIndex})">
+                        <div class="achievement-gallery-image-container">
+                            ${hasImage ? `
+                                <img src="${achievement.image_url}" alt="${achievement.title}" class="achievement-gallery-image" onerror="this.style.display='none'; this.parentElement.querySelector('.achievement-gallery-image-placeholder').style.display='flex';">
+                                <div class="achievement-gallery-image-placeholder" style="display:none;">
+                                    <i class="fas fa-image"></i>
                                 </div>
+                            ` : `
+                                <div class="achievement-gallery-image-placeholder">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            `}
+                            ${achievement.position ? `<span class="achievement-gallery-position-badge">${achievement.position}</span>` : ''}
+                        </div>
+                        <div class="achievement-gallery-content">
+                            <h3 class="achievement-gallery-title">${achievement.title}</h3>
+                            <div class="achievement-gallery-meta">
+                                <span class="achievement-gallery-date">
+                                    <i class="fas fa-calendar"></i> ${formatDate(achievement.date)}
+                                </span>
                             </div>
+                            ${achievement.team_name ? `
+                                <div class="achievement-gallery-team">
+                                    <i class="fas fa-shield-alt"></i> ${achievement.team_name}
+                                </div>
+                            ` : ''}
+                            ${achievement.prize ? `
+                                <div class="achievement-gallery-prize">
+                                    <i class="fas fa-trophy"></i> ${achievement.prize}
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
             });
             
-            timelineHTML += `
+            galleryHTML += `
                     </div>
                 </div>
             `;
         });
         
-        timelineHTML += '</div>';
-        container.innerHTML = timelineHTML;
+        galleryHTML += '</div>';
+        container.innerHTML = galleryHTML;
     }
 
     // Setup lightbox
     setupAchievementLightbox();
 
-    // Initial display - Timeline only
-    displayTimeline(achievementsData);
+    // Initial display - Gallery view
+    displayGallery(achievementsData);
 });
 
 /**
